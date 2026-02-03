@@ -15,6 +15,7 @@ function createMockClient() {
         auth: {
             getSession: async () => ({ data: { session: null }, error: null }),
             signInWithPassword: async () => ({ data: { user: { id: "mock-user" } }, error: null }),
+            signInWithOtp: async () => ({ data: { session: null }, error: null }),
             signOut: async () => ({ error: null }),
             onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
         },

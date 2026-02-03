@@ -39,19 +39,25 @@ export default function LoginPage() {
             return;
         }
 
-        const { error } = await supabase.auth.signInWithOtp({
-            email,
-            options: {
-                emailRedirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
+        try {
+            const { error } = await supabase.auth.signInWithOtp({
+                email,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                },
+            });
 
-        if (error) {
-            setMessage(error.message);
-        } else {
-            setMessage("Check your email for the login link!");
+            if (error) {
+                setMessage(error.message);
+            } else {
+                setMessage("Check your email for the login link!");
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage("An unexpected error occurred. Please try again.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const handleDevLogin = () => {
