@@ -66,7 +66,10 @@ export default function LoginPage() {
     };
 
     const handleDevLogin = () => {
-        setUser({ email: "dev@example.com", id: "dev-user", level: "Founder", current_streak: 42 });
+        console.log("Dev Skip clicked");
+        // Set a cookie so the middleware knows we're in a mock session
+        document.cookie = "sb-mock-session=true; path=/; max-age=3600";
+        setUser({ email: "dev@example.com", id: "mock-dev-user", level: "Founder", current_streak: 42 });
         router.push("/dashboard");
     }
 
@@ -120,6 +123,7 @@ export default function LoginPage() {
                     <div className="mt-6 border-t border-slate-800 pt-4">
                         <p className="text-xs text-slate-500 text-center mb-2">For development/testing:</p>
                         <Button
+                            type="button"
                             variant={message?.includes('⚠️') ? 'default' : 'ghost'}
                             size="sm"
                             className={`w-full ${message?.includes('⚠️') ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-slate-500 hover:text-white'}`}

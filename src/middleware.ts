@@ -33,12 +33,13 @@ export async function middleware(request: NextRequest) {
 
     // Get user session
     const { data: { user } } = await supabase.auth.getUser()
+    const isMockSession = request.cookies.get('sb-mock-session')?.value === 'true'
 
     // Protected routes - redirect to login if not authenticated
     const protectedPaths = ['/dashboard', '/analytics', '/modules']
     const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
-    if (isProtectedPath && !user) {
+    if (isProtectedPath && !user && !isMockSession) {
         const redirectUrl = new URL('/login', request.url)
         return NextResponse.redirect(redirectUrl)
     }

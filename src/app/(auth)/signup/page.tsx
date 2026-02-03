@@ -75,6 +75,8 @@ export default function SignupPage() {
     };
 
     const handleDevSignup = () => {
+        // Set a cookie so the middleware knows we're in a mock session
+        document.cookie = "sb-mock-session=true; path=/; max-age=3600";
         router.push("/dashboard");
     };
 
@@ -110,10 +112,10 @@ export default function SignupPage() {
 
                         {message && (
                             <div className={`p-3 rounded-lg text-xs text-center border ${messageType === 'error'
-                                    ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                                    : messageType === 'success'
-                                        ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                                        : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                                : messageType === 'success'
+                                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                 }`}>
                                 {message}
                             </div>
