@@ -48,9 +48,14 @@ export default function LoginPage() {
             });
 
             if (error) {
-                setMessage(error.message);
+                // Check for rate limit error
+                if (error.message.toLowerCase().includes('rate limit')) {
+                    setMessage("⚠️ Too many login attempts. Please use 'Dev Skip' below or wait a few minutes.");
+                } else {
+                    setMessage(error.message);
+                }
             } else {
-                setMessage("Check your email for the login link!");
+                setMessage("✅ Check your email for the login link!");
             }
         } catch (err) {
             console.error(err);
@@ -92,11 +97,18 @@ export default function LoginPage() {
                             </div>
                         </div>
 
+
                         {message && (
-                            <div className="p-3 rounded-lg bg-blue-500/10 text-blue-400 text-xs text-center border border-blue-500/20">
+                            <div className={`p-3 rounded-lg text-xs text-center border ${message.includes('⚠️') || message.toLowerCase().includes('error')
+                                ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                : message.includes('✅')
+                                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                }`}>
                                 {message}
                             </div>
                         )}
+
 
                         <Button className="w-full" disabled={loading}>
                             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -104,9 +116,16 @@ export default function LoginPage() {
                         </Button>
                     </form>
 
+
                     <div className="mt-6 border-t border-slate-800 pt-4">
-                        <Button variant="ghost" size="sm" className="w-full text-slate-500 hover:text-white" onClick={handleDevLogin}>
-                            <Play className="w-3 h-3 mr-2" /> Dev Skip (Mock)
+                        <p className="text-xs text-slate-500 text-center mb-2">For development/testing:</p>
+                        <Button
+                            variant={message?.includes('⚠️') ? 'default' : 'ghost'}
+                            size="sm"
+                            className={`w-full ${message?.includes('⚠️') ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-slate-500 hover:text-white'}`}
+                            onClick={handleDevLogin}
+                        >
+                            <Play className="w-3 h-3 mr-2" /> Dev Skip (Mock Login)
                         </Button>
                     </div>
                 </CardContent>
