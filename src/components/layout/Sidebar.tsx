@@ -22,7 +22,7 @@ import {
 export function Sidebar() {
     const pathname = usePathname();
     const { isSidebarOpen, toggleSidebar } = useUIStore();
-    const { level, current_xp } = useUserStore();
+    const { level, xp } = useUserStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -79,12 +79,12 @@ export function Sidebar() {
                             <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-                                    style={{ width: `${(current_xp % 1000) / 10}%` }}
+                                    style={{ width: `${(xp % 1000) / 10}%` }}
                                 />
                             </div>
                             <div className="flex justify-between mt-1.5 text-[10px] text-slate-500">
-                                <span>{current_xp} XP</span>
-                                <span>Next: {Math.ceil(current_xp / 1000) * 1000}</span>
+                                <span>{xp} XP</span>
+                                <span>Next: {Math.ceil(xp / 1000) * 1000}</span>
                             </div>
                         </div>
                     </div>

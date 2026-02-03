@@ -27,10 +27,10 @@ export function useAuth() {
                     id: session.user.id,
                     email: session.user.email ?? "",
                     level: profile?.level ?? "Novice",
-                    current_xp: profile?.current_xp ?? 0,
-                    current_streak: profile?.current_streak ?? 0,
-                    target_mrr: profile?.target_mrr ?? 0,
-                });
+                    xp: profile?.xp ?? 0,
+                    streakDays: profile?.streak_days ?? 0,
+                    mrrGoal: profile?.mrr_goal ?? 1000,
+                } as any);
             } else {
                 setUser(null);
             }

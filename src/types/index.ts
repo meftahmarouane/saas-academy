@@ -1,15 +1,38 @@
 export type UserLevel = "Novice" | "Builder" | "Founder" | "Scale Master" | "SaaS Legend";
 
+export interface MrrLog {
+    date: string;
+    amount: number;
+    source: "new_customer" | "expansion" | "churn_recovery" | "initial";
+    note?: string;
+}
+
+export interface ModuleProgress {
+    completed: number; // 0 to 1
+    lastLesson: string;
+    locked?: boolean;
+}
+
+export interface WeeklyWin {
+    date: string;
+    text: string;
+    type: "lesson" | "mrr" | "manual" | "customer";
+    completed: boolean;
+}
+
 export interface UserProfile {
     id: string;
     email: string;
     level: UserLevel;
-    current_xp: number;
-    current_streak: number;
-    longest_streak: number;
-    current_mrr: number;
-    target_mrr: number;
-    start_date: string; // ISO date
+    xp: number;
+    streakDays: number;
+    lastActive: string;
+    currentMRR: number;
+    mrrGoal: number;
+    mrrHistory: MrrLog[];
+    moduleProgress: Record<string, ModuleProgress>;
+    achievements: string[]; // Achievement IDs
+    weeklyWins: WeeklyWin[];
 }
 
 export interface Module {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserProfile } from "@/types";
+import { UserProfile, MrrLog, WeeklyWin } from "@/types";
 import { supabase } from "@/lib/supabase";
 
 const updateProfile = async (id: string, data: Partial<UserProfile>) => {
@@ -17,7 +17,8 @@ interface UserState extends UserProfile {
     // Actions
     addXp: (amount: number) => void;
     updateStreak: (days: number) => void;
-    updateMrr: (amount: number) => void;
+    updateMrr: (amount: number, source?: MrrLog["source"], note?: string) => void;
+    addWeeklyWin: (win: WeeklyWin) => void;
     setUser: (user: Partial<UserProfile>) => void;
 }
 
@@ -32,43 +33,57 @@ export const useUserStore = create<UserState>()(
             // Initial Mock State
             id: "mock-user-1",
             email: "founder@example.com",
-            level: "Novice",
-            current_xp: 0,
-            current_streak: 0,
-            longest_streak: 0,
-            current_mrr: 0,
-            target_mrr: 1000,
-            start_date: new Date().toISOString(),
+            level: "Builder",
+            xp: 650,
+            streakDays: 5,
+            lastActive: new Date().toISOString(),
+            currentMRR: 250,
+            mrrGoal: 1000,
+            mrrHistory: [
+                { date: '2024-01-01', amount: 100, source: 'initial' },
+                { date: '2024-01-15', amount: 150, source: 'new_customer' },
+                { date: '2024-02-01', amount: 250, source: 'new_customer' },
+            ],
+            moduleProgress: {
+                ideation: { completed: 0.8, lastLesson: '3' },
+                unitEconomics: { completed: 0.4, lastLesson: '2' },
+                launch: { completed: 0, lastLesson: '0' },
+                scale: { completed: 0, lastLesson: '0', locked: true }
+            },
+            achievements: ['first_dollar', 'seven_day_streak'],
+            weeklyWins: [
+                { date: new Date().toISOString(), text: "Completed 3 lessons", type: 'lesson', completed: true },
+                { date: new Date().toISOString(), text: "Logged $150 new MRR", type: 'mrr', completed: true },
+                { date: new Date().toISOString(), text: "Validate idea with 3 customers", type: 'customer', completed: false },
+            ],
 
             addXp: (amount) => set((state) => {
-                const newXp = state.current_xp + amount;
-                updateProfile(state.id, { current_xp: newXp });
-                return { current_xp: newXp };
+                const newXp = state.xp + amount;
+                updateProfile(state.id, { xp: newXp } as any);
+                return { xp: newXp };
             }),
             updateStreak: (days) => set((state) => {
-                updateProfile(state.id, { current_streak: days });
-                return { current_streak: days };
+                updateProfile(state.id, { streakDays: days } as any);
+                return { streakDays: days };
             }),
-            updateMrr: (amount) => set((state) => {
-                updateProfile(state.id, { target_mrr: amount }); // Assuming this maps to target_mrr for now based on context, or we need a current_mrr field in DB? 
-                // Wait, DB types: current_streak, longest_streak, current_xp, level. 
-                // mrr_logs table handles the logs. 
-                // The store has `current_mrr` and `target_mrr`. 
-                // Let's check DB schema again. `profiles` has `target_mrr`. 
-                // `current_mrr` is likely derived or stored. The DB schema in earlier steps for profiles has `target_mrr`.
-                // Let's just update local state for MRR for now if it's not in profiles, or assume it's calculated.
-                // Actually, let's look at `updateMrr` usage. It sets `current_mrr`. 
-                // If `current_mrr` isn't on profile, we can't sync it easily without a column.
-                // I will add it to the local update only for now, or check if I should add it to DB. 
-                // The implementation plan says: "mrr_logs" table exists. 
-                // Let's stick to syncing what overlaps.
-                return { current_mrr: amount };
+            updateMrr: (amount, source = 'new_customer', note) => set((state) => {
+                const newLog: MrrLog = {
+                    date: new Date().toISOString().split('T')[0],
+                    amount,
+                    source,
+                    note
+                };
+                const newHistory = [...state.mrrHistory, newLog];
+                updateProfile(state.id, { currentMRR: amount } as any);
+                return {
+                    currentMRR: amount,
+                    mrrHistory: newHistory
+                };
             }),
-            setUser: (user) => set((state) => {
-                // If setting user (e.g. on login), we don't necessarily push BACK to DB immediately unless it's an update.
-                // Usually this is for hydration.
-                return { ...state, ...user };
-            }),
+            addWeeklyWin: (win) => set((state) => ({
+                weeklyWins: [...state.weeklyWins, win]
+            })),
+            setUser: (user) => set((state) => ({ ...state, ...user })),
         }),
         {
             name: "saas-academy-user-storage",
