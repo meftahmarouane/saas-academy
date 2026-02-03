@@ -3,19 +3,11 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/layout/AuthProvider";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
+import { GlobalHeader } from "@/components/layout/GlobalHeader";
 
 export const metadata: Metadata = {
   title: "SaaS-500K Academy",
-  description: "Gamified learning platform for solo founders.",
+  description: "Build your SaaS to $500K ARR",
 };
 
 export default function RootLayout({
@@ -25,12 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
-      >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+      <body className="antialiased bg-slate-950 text-slate-200">
+        <GlobalHeader />
+        {children}
       </body>
     </html>
   );

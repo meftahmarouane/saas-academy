@@ -28,13 +28,29 @@ export async function middleware(request: NextRequest) {
                     )
                 },
             },
-            // Middleware usually needs to refresh the token, but we don't need to block unless protective
         }
     )
 
-    // This will refresh session if expired - required for Server Components
-    // https://supabase.com/docs/guides/auth/server-side/nextjs
-    await supabase.auth.getUser()
+    // Get user session
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Protected routes - redirect to login if not authenticated
+    const protectedPaths = ['/dashboard', '/analytics', '/modules']
+    const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+
+    if (isProtectedPath && !user) {
+        const redirectUrl = new URL('/login', request.url)
+        return NextResponse.redirect(redirectUrl)
+    }
+
+    // Auth pages - redirect to dashboard if already authenticated
+    const authPaths = ['/login', '/signup']
+    const isAuthPath = authPaths.some(path => request.nextUrl.pathname.startsWith(path))
+
+    if (isAuthPath && user) {
+        const redirectUrl = new URL('/dashboard', request.url)
+        return NextResponse.redirect(redirectUrl)
+    }
 
     return response
 }

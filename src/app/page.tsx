@@ -8,26 +8,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
 
-      {/* Navbar */}
-      <header className="border-b border-slate-800 bg-slate-950/50 backdrop-blur fixed top-0 w-full z-50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xl text-slate-100">
-            <Rocket className="w-6 h-6 text-blue-500" />
-            <span>SaaS-500K</span>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              Log In
-            </Link>
-            <Link href="/login">
-              <Button size="sm" className="hidden sm:flex">
-                Get Started
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <main className="pt-32 pb-20">
 
         {/* Hero Section */}
@@ -51,7 +31,7 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-            <Link href="/login">
+            <Link href="/signup">
               <Button size="lg" className="h-12 px-8 text-base">
                 Start Your Journey <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
