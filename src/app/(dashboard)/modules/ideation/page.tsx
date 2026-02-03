@@ -1,6 +1,7 @@
 "use client";
 
 import { CompetitorFinder } from "@/components/modules/ideation/CompetitorFinder";
+import { ExperimentTracker } from "@/components/modules/ideation/validation/ExperimentTracker";
 import { IdeaScoreCalculator } from "@/components/modules/ideation/IdeaScoreCalculator";
 import { LessonChecklist } from "@/components/modules/LessonChecklist";
 import { Badge } from "@/components/ui/Badge";
@@ -72,6 +73,18 @@ export default function IdeationModulePage() {
                             High willingness to pay + High market advantage = Success.
                         </p>
                         <IdeaScoreCalculator />
+                    </section>
+
+                    {/* Step 3 */}
+                    <section className="space-y-4">
+                        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-3">
+                            <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                            Run Cheap Experiments
+                        </h2>
+                        <p className="text-slate-400 leading-relaxed">
+                            Before writing code, validate your hypothesis. If you can't get 10 people to reply to an email, you won't get them to pay for software.
+                        </p>
+                        <ExperimentTracker />
                     </section>
 
                     {/* Conclusion */}
