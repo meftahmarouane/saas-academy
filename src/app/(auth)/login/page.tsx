@@ -12,11 +12,20 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+    const [lastAttempt, setLastAttempt] = useState(0);
     const router = useRouter();
     const { setUser } = useUserStore();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const now = Date.now();
+        if (now - lastAttempt < 3000) {
+            setMessage("Please wait a moment before trying again.");
+            return;
+        }
+        setLastAttempt(now);
+
         setLoading(true);
         setMessage(null);
 

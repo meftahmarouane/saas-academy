@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useUIStore, useUserStore } from "@/store/user-store";
 import { cn } from "@/lib/utils";
 import {
@@ -22,6 +23,14 @@ export function Sidebar() {
     const pathname = usePathname();
     const { isSidebarOpen, toggleSidebar } = useUIStore();
     const { level, current_xp } = useUserStore();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Prevent hydration mismatch by returning null or skeleton on server/first render
+    if (!mounted) return null;
 
     const navItems = [
         { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
